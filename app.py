@@ -3,6 +3,7 @@
 # https://openlibrary.org/developers/api
 
 # flask --app app.py --debug run
+# fuser -k 5000/tcp
 
 import os
 
@@ -13,7 +14,7 @@ from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
-from helpers import apology, login_required
+from helpers import apology, login_required, book_lookup
 
 # Configure application
 app = Flask(__name__)
@@ -40,11 +41,21 @@ def index():
     """Show list of books"""
     return apology("TODO", 403)
 
-@app.route("/lookup")
+@app.route("/lookup", methods=["GET", "POST"])
 @login_required
 def lookup():
-    """Query books"""
-    return apology("TODO", 403)
+    # Require that a user input a stock’s symbol, implemented as a text field whose name is symbol.
+    # Submit the user’s input via POST to /quote.
+    """Look up entry for book."""
+    if request.method == "POST":
+        title = request.form.get("book_title")
+        bookTitle = book_lookup(title)
+        
+        return render_template("lookup.html", book=bookTitle)
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("lookup.html")
   
 
 @app.route("/login", methods=["GET", "POST"])
@@ -83,7 +94,6 @@ def login():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        print(request.form.get("username"))
         return render_template("login.html")
 
 @app.route("/logout")

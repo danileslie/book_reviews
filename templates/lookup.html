@@ -1,0 +1,23 @@
+<!-- form to look up book information, taking book names as input -->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Lookup
+{% endblock %}
+
+{% block main %}
+    <form action="/lookup" method="post">
+            <div class="mb-3">
+                <label for="symbol">Book Title: </label>
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="book_title" name="book_title" placeholder="Book Title" type="text">
+            </div>
+            <button type="submit" class="btn btn-primary">Get Book</button>
+    </form>
+    {% if book %}
+        <h3>{{ book['title'] }} ({{ book['cover-medium'] }} {{ book['cover-small'] }}) || {{ book['key'] }}</h3>
+        <!-- put add to list button here that will add to database -->
+    {% endif %}
+
+{% endblock %}
+
