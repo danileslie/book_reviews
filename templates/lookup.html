@@ -8,16 +8,23 @@
 
 {% block main %}
     <form action="/lookup" method="post">
-            <div class="mb-3">
-                <label for="symbol">Book Title: </label>
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="book_title" name="book_title" placeholder="Book Title" type="text">
-            </div>
-            <button type="submit" class="btn btn-primary">Get Book</button>
+        <div class="mb-3">
+            <label for="symbol">Book Title: </label>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="book_title" name="book_title" placeholder="Book Title" type="text">
+        </div>
+        <button type="submit" class="btn btn-primary" value='getBook' name='getBook'>Get Book</button> 
+        
     </form>
-    {% if book %}
-        <h3>{{ book['title'] }} ({{ book['cover-medium'] }} {{ book['cover-small'] }}) || {{ book['key'] }}</h3>
-        <!-- put add to list button here that will add to database -->
-    {% endif %}
 
+    {% if book %}
+    <form action='/addbook' method='post'>
+        <h3>{{ book['title'] }} ({{ book['cover-medium'] }} {{ book['cover-small'] }}) || {{ book['key'] }}</h3>
+        <input type="hidden" name="title" id='title' value="{{ book['title'] }}">
+        <input type="hidden" name="coverM" id='coverM' value="{{ book['cover-medium'] }}">
+        <input type="hidden" name="coverS" id='coverS' value="{{ book['cover-small'] }}">
+        <input type="hidden" name="bookID" id='bookID' value="{{ book['key'] }}">
+        <button type='submit' class="btn btn-primary add-book" name='add'>Add book</button>
+    </form>
+        {% endif %}
 {% endblock %}
 

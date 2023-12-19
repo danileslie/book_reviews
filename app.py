@@ -8,7 +8,7 @@
 import os
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -47,16 +47,31 @@ def lookup():
     # Require that a user input a stock’s symbol, implemented as a text field whose name is symbol.
     # Submit the user’s input via POST to /quote.
     """Look up entry for book."""
+   
     if request.method == "POST":
+
         title = request.form.get("book_title")
         bookTitle = book_lookup(title)
-        
-        return render_template("lookup.html", book=bookTitle)
+
+        return render_template("lookup.html", book=bookTitle) 
+       
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("lookup.html")
+
+@app.route("/addbook", methods=['GET', 'POST'])
+@login_required
+def addbook():
+    if request.method == "POST":
+        title = request.form.get("title")
+        coverM = request.form.get("coverM")
+        coverS = request.form.get("coverS")
+        bookID = request.form.get("bookID")
+        print(title, bookID)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("lookup.html")
-  
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
