@@ -39,7 +39,8 @@ def after_request(response):
 @login_required
 def index():
     """Show list of books"""
-    return apology("TODO", 403)
+    bookList = db.execute("SELECT * from booklist")
+    return render_template("index.html", books = bookList)
 
 @app.route("/lookup", methods=["GET", "POST"])
 @login_required
@@ -68,10 +69,76 @@ def addbook():
         coverS = request.form.get("coverS")
         bookID = request.form.get("bookID")
         print(title, bookID)
+        db.execute(
+            "INSERT INTO booklist (user_id, book_id, title, coverM, coverS) VALUES (:user_id, :book_id, :title, :coverM, :coverS)",
+            user_id = session["user_id"],
+            book_id = bookID,
+            title = title,
+            coverM = coverM,
+            coverS = coverS
+        )
+
+        flash(f" {title} has been added to the booklist.")
+        return render_template("lookup.html")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("lookup.html")
+
+@app.route("/deletebook", methods=['GET', 'POST'])
+@login_required
+def deletebook():
+    if request.method == "POST":
+        bookList = db.execute("SELECT * from booklist")
+        delete_id = request.form.get("bookID")
+        db.execute("DELETE FROM booklist WHERE book_id = :delete_id",
+            delete_id = delete_id    
+        )
+        db.execute("DELETE FROM book_reviews WHERE user_id = :user_id AND book_id = :delete_id",
+                   user_id=session["user_id"],
+                   delete_id = delete_id
+        )
+        return redirect(url_for("index"))
+
+    else:
+        return render_template("index.html", books = bookList)
+
+@app.route("/add_edit_review", methods=['GET', 'POST'])
+@login_required
+def add_edit_review():
+    if request.method == "POST":
+        current_book=request.form.get("current")
+        review_insert=request.form.get('review_insert')
+        # query db for existing review
+        rows = db.execute("SELECT * from book_reviews WHERE book_id = :book_id",
+                         book_id=current_book)
+
+        if len(rows) == 1:
+            db.execute("UPDATE book_reviews SET review = :review WHERE user_id = :user_id AND book_id = :book_id",
+                        user_id=session["user_id"],
+                        book_id=current_book,
+                        review=review_insert
+                        )
+            return redirect(url_for("index"))
+        
+        else:
+            db.execute("INSERT INTO book_reviews (user_id, book_id, review) VALUES (:user_id, :book_id, :review)",
+                            user_id=session["user_id"],
+                            book_id=current_book,
+                            review=review_insert
+                            )
+            print(current_book)
+            return redirect(url_for("index"))
+
+@app.route('/delete_review', methods=['GET', 'POST'])
+@login_required
+def delete_review():
+    if request.method == "POST":
+        delete_id = request.form.get('bookID_3')
+        db.execute("DELETE FROM book_reviews WHERE book_id = :delete_id",
+                   delete_id=delete_id)
+        return redirect(url_for("index"))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

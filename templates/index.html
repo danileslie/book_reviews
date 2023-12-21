@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Lookup
+{% endblock %}
+
+{% block main %}
+    <table>
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Book</th>
+                <th>Book</th>
+                <th>Book</th>
+                <th>Book</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td><img src='{{ book.coverS }}'></td>
+                    <td>
+                        <form method='POST' action='/deletebook'>
+                        <input type=hidden name='bookID' id='bookID' value='{{ book.book_id }}'>
+                        <button class='btn btn-primary' type='delete'>Delete</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method='POST' action='/addreview'>
+                        <input type=hidden name='bookID_2' id='bookID_2'  value='{{ book.book_id }}'>
+                        <button class='btn btn-primary add_review book_ID' value='{{ book.book_id }}'type='button' >Add/Update review</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method='POST' action='/delete_review'>
+                        <input type=hidden name='bookID_3' id='bookID_3' value='{{ book.book_id }}'>
+                        <button class='btn btn-primary' type='submit'>Delete Review</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form method='POST' action='/add_edit_review'>
+            <input type=text name='review_insert' id='review_insert'>
+            <input type="hidden" name="current" id='current' value=''>
+            <button class='btn btn-primary' type='submit'>Submit</button>
+        </form>
+    </div>
+
+    </div>
+    
+
+{% endblock %}
+{% block javascript %} 
+<script type='text/javascript' src='static/scripts/script.js'></script>
+{% endblock javascript %}
