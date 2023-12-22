@@ -1,7 +1,3 @@
-# taken from finance.db
-
-# https://openlibrary.org/developers/api
-
 # flask --app app.py --debug run
 # fuser -k 5000/tcp
 
@@ -45,12 +41,9 @@ def index():
 @app.route("/lookup", methods=["GET", "POST"])
 @login_required
 def lookup():
-    # Require that a user input a stock’s symbol, implemented as a text field whose name is symbol.
-    # Submit the user’s input via POST to /quote.
     """Look up entry for book."""
    
     if request.method == "POST":
-
         title = request.form.get("book_title")
         bookTitle = book_lookup(title)
 
@@ -68,7 +61,6 @@ def addbook():
         coverM = request.form.get("coverM")
         coverS = request.form.get("coverS")
         bookID = request.form.get("bookID")
-        print(title, bookID)
         db.execute(
             "INSERT INTO booklist (user_id, book_id, title, coverM, coverS) VALUES (:user_id, :book_id, :title, :coverM, :coverS)",
             user_id = session["user_id"],
@@ -85,12 +77,12 @@ def addbook():
     else:
         return render_template("lookup.html")
 
-@app.route("/deletebook", methods=['GET', 'POST'])
+@app.route("/delete_book", methods=['GET', 'POST'])
 @login_required
-def deletebook():
+def delete_book():
     if request.method == "POST":
         bookList = db.execute("SELECT * from booklist")
-        delete_id = request.form.get("bookID")
+        delete_id = request.form.get("bookID-delete")
         db.execute("DELETE FROM booklist WHERE book_id = :delete_id",
             delete_id = delete_id    
         )
@@ -100,6 +92,7 @@ def deletebook():
         )
         return redirect(url_for("index"))
 
+    # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("index.html", books = bookList)
 
@@ -109,9 +102,16 @@ def add_edit_review():
     if request.method == "POST":
         current_book=request.form.get("current")
         review_insert=request.form.get('review_insert')
+         
         # query db for existing review
-        rows = db.execute("SELECT * from book_reviews WHERE book_id = :book_id",
+        rows = db.execute("SELECT * FROM book_reviews WHERE book_id = :book_id",
                          book_id=current_book)
+        
+        existing_review = db.execute("SELECT * FROM book_reviews WHERE user_id = :user_id AND book_id = :book_id",
+                        user_id=session["user_id"],
+                        book_id=current_book)
+        
+        print(existing_review)
 
         if len(rows) == 1:
             db.execute("UPDATE book_reviews SET review = :review WHERE user_id = :user_id AND book_id = :book_id",
@@ -119,6 +119,7 @@ def add_edit_review():
                         book_id=current_book,
                         review=review_insert
                         )
+            print(existing_review)
             return redirect(url_for("index"))
         
         else:
@@ -127,27 +128,32 @@ def add_edit_review():
                             book_id=current_book,
                             review=review_insert
                             )
-            print(current_book)
-            return redirect(url_for("index"))
+            return redirect(url_for("index", current_review = review_insert))
 
 @app.route('/delete_review', methods=['GET', 'POST'])
 @login_required
 def delete_review():
     if request.method == "POST":
-        delete_id = request.form.get('bookID_3')
+        delete_id = request.form.get('bookID_delete_review')
         db.execute("DELETE FROM book_reviews WHERE book_id = :delete_id",
                    delete_id=delete_id)
         return redirect(url_for("index"))
+
+@app.route('/reviews', methods=['GET', 'POST'])
+@login_required
+def reviews():
+
+    reviews = db.execute("SELECT covers, title, book_reviews.review FROM booklist JOIN book_reviews ON booklist.book_id=book_reviews.book_id")
+    
+    return render_template("reviews.html", reviews=reviews)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-
     # Forget any user_id
     session.clear()
 
-    # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         # Ensure username was submitted
         if not request.form.get("username"):
@@ -181,7 +187,6 @@ def login():
 @app.route("/logout")
 def logout():
     """Log user out"""
-
     # Forget any user_id
     session.clear()
 

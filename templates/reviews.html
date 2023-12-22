@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Reviews
+{% endblock %}
+
+{% block main %}
+
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Cover</th>
+            <th style="width:60%">Reviews</th>
+            <!-- <th>Book</th>
+            <th>Book</th> -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for review in reviews %}
+            <tr>
+                <td>{{ review.title }}</td>
+                <td><img src='{{ review.coverS }}'></td>
+                <td colspan='2'>{{ review.review }}</td>
+                
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
+

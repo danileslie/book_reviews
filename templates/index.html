@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block main %}
-    <table>
+    <table class="table table-bordered table-striped table-hover">
         <thead>
             <tr>
-                <th>Book</th>
-                <th>Book</th>
-                <th>Book</th>
-                <th>Book</th>
-                <th>Book</th>
+                <th>Title</th>
+                <th>Cover</th>
+                <th colspan='3'>Actions</th>
+                <!-- <th>Book</th>
+                <th>Book</th> -->
             </tr>
         </thead>
         <tbody>
@@ -21,21 +21,21 @@
                     <td>{{ book.title }}</td>
                     <td><img src='{{ book.coverS }}'></td>
                     <td>
-                        <form method='POST' action='/deletebook'>
-                        <input type=hidden name='bookID' id='bookID' value='{{ book.book_id }}'>
-                        <button class='btn btn-primary' type='delete'>Delete</button>
-                        </form>
-                    </td>
-                    <td>
                         <form method='POST' action='/addreview'>
-                        <input type=hidden name='bookID_2' id='bookID_2'  value='{{ book.book_id }}'>
+                        <input type=hidden name='bookID-add' id='bookID'  value='{{ book.book_id }}'>
                         <button class='btn btn-primary add_review book_ID' value='{{ book.book_id }}'type='button' >Add/Update review</button>
                         </form>
                     </td>
                     <td>
                         <form method='POST' action='/delete_review'>
-                        <input type=hidden name='bookID_3' id='bookID_3' value='{{ book.book_id }}'>
+                        <input type=hidden name='bookID_delete_review' id='bookID_delete_review' value='{{ book.book_id }}'>
                         <button class='btn btn-primary' type='submit'>Delete Review</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method='POST' action='/delete_book'>
+                        <input type=hidden name='bookID-delete' id='bookID-delete' value='{{ book.book_id }}'>
+                        <button class='btn btn-primary' type='delete'>Delete Book Entry</button>
                         </form>
                     </td>
                 </tr>
@@ -43,10 +43,8 @@
         </tbody>
     </table>
     
-
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-
+<!-- review modal -->
+    <div id="reviewModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -56,11 +54,9 @@
             <button class='btn btn-primary' type='submit'>Submit</button>
         </form>
     </div>
-
     </div>
-    
-
 {% endblock %}
+
 {% block javascript %} 
 <script type='text/javascript' src='static/scripts/script.js'></script>
 {% endblock javascript %}

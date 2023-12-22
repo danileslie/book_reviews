@@ -1,12 +1,5 @@
-# taken from finance.db
 
-import csv
-import datetime
-import pytz
 import requests
-import subprocess
-import urllib
-import uuid
 import json
 
 from flask import redirect, render_template, session
@@ -45,12 +38,13 @@ def book_lookup(title):
     """Look up entry for book."""
 
     try:
-          # Open Library API
+        # Open Library API
         url = "https://openlibrary.org/search.json"
         query = {
         "q": title,
         }
 
+        # execute if url + query returns successful
         response = requests.get(url, query)
         if response.status_code == 200:
             data = json.loads(response.text)
@@ -59,6 +53,7 @@ def book_lookup(title):
                 base_url = "https://openlibrary.org"
                 work_details = book['key']
                 url = base_url + work_details + '.json'
+                # if query for book + data is successful, get specific information from entry
                 response = requests.get(url)
                 if response.status_code == 200:
                     data = json.loads(response.text)
