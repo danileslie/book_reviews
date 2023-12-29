@@ -3,28 +3,40 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Lookup
+Lookup
 {% endblock %}
-
 {% block main %}
-    <form action="/lookup" method="post">
-        <div class="mb-3">
-            <label for="symbol">Book Title: </label>
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="book_title" name="book_title" placeholder="Book Title" type="text">
-        </div>
-        <button type="submit" class="btn btn-primary" value='getBook' name='getBook'>Get Book</button> 
-        
-    </form>
+<form action="/lookup" method="post">
+    <div class="mb-3">
+        <label for="symbol">Book Title: </label>
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="book_title" name="book_title"
+            placeholder="Book Title" type="text">
+    </div>
+    <button type="submit" class="btn btn-primary" value='getBook' name='getBook'>Get Book</button>
 
-    {% if book %}
-    <form action='/addbook' method='post'>
-        <h3>{{ book['title'] }} ({{ book['cover-medium'] }} {{ book['cover-small'] }}) || {{ book['key'] }}</h3>
-        <input type="hidden" name="title" id='title' value="{{ book['title'] }}">
-        <input type="hidden" name="coverM" id='coverM' value="{{ book['cover-medium'] }}">
-        <input type="hidden" name="coverS" id='coverS' value="{{ book['cover-small'] }}">
-        <input type="hidden" name="bookID" id='bookID' value="{{ book['key'] }}">
-        <button type='submit' class="btn btn-primary add-book" name='add'>Add book</button>
-    </form>
-        {% endif %}
+</form>
+
+{% if book %}
+<form action='/addbook' method='post'>
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Cover</th>
+                <th colspan='3'>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ book['title'] }}</td>
+                <td><img src='{{ book["cover-small"]}}'></td>
+                <td><button type='submit' class="btn btn-primary add-book" name='add'>Add book</button></td>
+            </tr>
+            <input type="hidden" name="title" id='title' value="{{ book['title'] }}">
+            <input type="hidden" name="coverM" id='coverM' value="{{ book['cover-medium'] }}">
+            <input type="hidden" name="coverS" id='coverS' value="{{ book['cover-small'] }}">
+            <input type="hidden" name="bookID" id='bookID' value="{{ book['key'] }}">
+
+</form>
+{% endif %}
 {% endblock %}
-

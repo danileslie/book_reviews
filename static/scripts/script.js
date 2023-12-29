@@ -5,11 +5,13 @@ let btns = document.querySelectorAll(".book_ID");
 // get information on currently selected book
 let current_book = document.getElementById('current');
 // Get the <span> element that closes the modal
-let span = document.getElementsByClassName("close")[0];
+let close = document.querySelector(".close");
 
 btns.forEach((button) => {
-    button.addEventListener('click', openModal)
+    button.addEventListener('click', openModal);
 })
+
+close.addEventListener('click', closeModal);
 
 // When the user clicks the button, open the modal 
 function openModal() {
@@ -17,10 +19,14 @@ function openModal() {
   modal.style.display='block';
 }    
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
+function closeModal(){
   modal.style.display = "none";
 }
+// When the user clicks on button, close the modal
+// close.onclick = function() {
+//   console.log('close clicked');
+//   // modal.style.display = "none";
+// }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {

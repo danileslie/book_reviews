@@ -11,8 +11,6 @@
                 <th>Title</th>
                 <th>Cover</th>
                 <th colspan='3'>Actions</th>
-                <!-- <th>Book</th>
-                <th>Book</th> -->
             </tr>
         </thead>
         <tbody>
@@ -47,11 +45,15 @@
     <div id="reviewModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <!-- <span class="close">&times;</span> -->
+        <p class='form-p'>Enter your review here:</p>
         <form method='POST' action='/add_edit_review'>
-            <input type=text name='review_insert' id='review_insert'>
+            <textarea type=text name='review_insert' id='review_insert' cols='70' rows='20'></textarea>
             <input type="hidden" name="current" id='current' value=''>
-            <button class='btn btn-primary' type='submit'>Submit</button>
+            <div class='button-flex'>
+                <button class='btn btn-primary' type='submit'>Submit</button>
+                <button class='btn btn-primary close' type='button'>Close</button>
+            </div>
         </form>
     </div>
     </div>
